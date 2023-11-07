@@ -1,0 +1,47 @@
+#include<stdio.h>
+#include<sys/time.h>
+#include<time.h>	
+#include<sys/resource.h>//headerfiles
+
+void main()//main function
+{
+	 struct timeval  tv1, tv2;//structure of variables are declared
+	 int size,input[50],i; //variable declaration
+	 struct rusage r_usage;//structure for resource usage
+	 printf("Enter the input size \n"); //prints
+	 scanf("%d",&size);//scans the input
+	 printf("Enter the array elements \n");//prints
+	 for(i=0;i<size;i++)//loop to scan the elements
+	 {
+	  	scanf("%d",&input[i]);//scans the array
+	 }
+	gettimeofday(&tv1, NULL);//gets the current time
+	iselection_sort (input,size);//function call
+	gettimeofday(&tv2, NULL);//gets the current time
+	 printf("\n Sorted array is \n");//prints
+	 for(i=0;i<size;i++)//loop to print
+	 {
+	  	printf("%d\t",input[i]);//prints array
+	 }
+	 printf("Time of selection sort = %f microseconds",(double)(tv2.tv_usec-tv1.tv_usec));//prints the time complexity
+	 //printf ("Total time = %f seconds\n", (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 +  (double) (tv2.tv_sec - tv1.tv_sec));
+	 getrusage(RUSAGE_SELF,&r_usage);//calls the function resource usage
+	 printf("Memory usage: %ld kilobytes\n",r_usage.ru_maxrss);//prints the memory usage
+}
+
+void selection_sort(int input[100],int n)//function definition
+{
+	 int i,j,max,temp;//variable declaration
+	 for(i=0;i<=n-2;i++)//loop through the array
+	 {
+		  max=i;//max is i
+		  for(j=i+1;j<=n-1;j++)//if condition satisfied
+		  {
+			   if(input[j]>input[max])//checks if greater
+				    max=j;//max is j
+		  }
+		    temp=input[max];
+		    input[max]=input[i];
+		    input[i]=temp;//element position is swapped
+	  }
+}
