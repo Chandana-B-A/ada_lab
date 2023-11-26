@@ -1,0 +1,67 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<sys/time.h>
+#include<time.h>
+#include<sys/resource.h>//headerfiles
+
+// Structure to represent a file
+struct File {
+    int id;
+};
+
+// Partition function for Quick Sort
+int partition(struct File arr[], int low, int high) {
+    int pivot = arr[high].id;//let rightmost element be the pivot
+    int i = (low - 1); // Index of smaller element
+    for (int j = low; j <= high - 1; j++) {
+        // If the current element is smaller than or equal to the pivot
+        if (arr[j].id <= pivot) {
+            i++;
+            // Swap arr[i] and arr[j]
+            struct File temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+    }
+    // Swap arr[i + 1] and arr[high] i.e., pivot
+    struct File temp = arr[i + 1];
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
+    return (i + 1);
+}
+
+// Quick sort function
+void quickSort(struct File arr[], int low, int high) {
+    if (low < high) {
+        // Partitioning index
+        int pi = partition(arr, low, high);
+        // Recursively sort elements before and after the partition
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+int main() 
+{
+    struct timeval  tv1, tv2;//structures for time complexity
+    struct rusage r_usage;//structures for space complexity
+    int n;
+    printf("Enter the number of files: ");
+    scanf("%d", &n);
+    struct File files[n];//structure for file ids
+    printf("Enter the IDs of the files:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &files[i].id);//scans the file ids
+    // Perform quick sort on the files based on IDs
+    quickSort(files, 0, n - 1);//function call
+    printf("Sorted files based on IDs: ");
+    for (int i = 0; i < n; i++)
+        printf("%d ", files[i].id);
+    printf("\n");//prints sorted array
+    gettimeofday(&tv1, NULL);
+    gettimeofday(&tv2, NULL);
+     printf("\nTime of quick sort = %f microseconds\n",(double)(tv2.tv_usec-tv1.tv_usec));//prints the time complexity
+	 getrusage(RUSAGE_SELF,&r_usage);//calls the function resource usage
+	 printf("Memory usage: %ld kilobytes\n",r_usage.ru_maxrss);//prints the memory usage
+    return 0;
+}
