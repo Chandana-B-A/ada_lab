@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <sys/time.h>
+#include <time.h>
+#include <sys/resource.h>//headerfiles
+
+int a[20][20], reach[20], n;//universal declaration
+
+void dfs(int v) {
+    reach[v] = 1; // Mark the current node as visited
+    for (i = 1; i <= n; i++) {
+        if (a[v][i] && !reach[i]) { // If the vertex is unvisited and belongs to the array
+            printf("\n%d-%d", v, i); // Print the starting vertex to i (i.e., number of iterations taken)
+            dfs(i); // Recursive call to visit the adjacent unvisited node
+        }
+    }
+}
+int main() {
+    int i, j, source, count = 0;//variable declaration
+    struct timeval tv1, tv2;//structure for time complexity
+    struct rusage r_usage;//structure for space complexity
+    printf("\nEnter number of vertices:");
+    scanf("%d", &n);//number of vertices
+    for (i = 1; i <= n; i++) {
+        reach[i] = 0;//initialise reach array to 0
+
+        for (j = 1; j <= n; j++)
+            a[i][j] = 0;//initialise a matrix to 0
+    }
+    printf("\nEnter the adjacency matrix:\n");
+    for (i = 1; i <= n; i++)
+        for (j = 1; j <=n; j++)
+            scanf("%d", &a[i][j]);//inputs for the adjacency matrix
+    printf("Enter the source vertex:\n");
+    scanf("%d", &source);//input for the source vertex
+    gettimeofday(&tv1, NULL);//start of the timer
+    dfs(source);//function call
+    gettimeofday(&tv2, NULL);//end of timer
+    printf("\n");
+    for (i = 1; i <= n; i++) {
+        if (reach[i])
+            count++;//count the number of elements in reach
+    }
+	printf("\n\nTime of BFS: %f microseconds", (double)(tv2.tv_usec - tv1.tv_usec));//print the time taken
+    getrusage(RUSAGE_SELF, &r_usage);//calculate space complexity
+    printf("\nMemory usage of BFS: %ld kilobytes\n", r_usage.ru_maxrss);//print space complexity
+    return 0;
+}
