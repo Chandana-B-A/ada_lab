@@ -1,0 +1,85 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<sys/time.h>
+#include<time.h>
+#include<sys/resource.h>//headerfiles
+
+struct File { // Structure to represent a file
+    int id;
+};
+
+// Merge function to merge two sorted arrays
+void merge(struct File arr[], int l, int m, int r) {
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 = r - m;//variable declaration
+
+    // Create temporary arrays
+    struct File L[n1], R[n2];
+
+    // Copy data to temporary arrays L[] and R[]
+    for (i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for (j = 0; j < n2; j++)
+        R[j] = arr[m + 1 + j];
+
+    // Merge the temporary arrays back into arr[l..r]
+    i = 0; // Initial index of first subarray
+    j = 0; // Initial index of second subarray
+    k = l; // Initial index of merged subarray
+    while (i < n1 && j < n2) {
+        if (L[i].id <= R[j].id) {
+            arr[k] = L[i];//swap when i and j oveerlaps
+            i++;
+        } else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+    // Copy the remaining elements of L[], if there are any
+    while (i < n1) {
+        arr[k] = L[i];
+        i++; k++;//increment pointers
+    }
+    // Copy the remaining elements of R[], if there are any
+    while (j < n2) {
+        arr[k] = R[j];
+        j++; k++;//increment pointers
+    }
+}
+
+// Merge sort function
+void mergeSort(struct File arr[], int l, int r) {
+    if (l < r) {
+        int m = l + (r - l) / 2;// Same as (l+r)/2, but avoids overflow for large l and r
+        // Sort first and second halves
+        mergeSort(arr, l, m);//reccursive call for left half
+        mergeSort(arr, m + 1, r);//reccursive call for right half
+        merge(arr, l, m, r);// Merge the sorted halves
+    }
+}
+int main() {
+    struct timeval  tv1, tv2;//structures for time complexity
+    struct rusage r_usage;//structures for space complexity
+    int n;//variable declaration
+    printf("Enter the number of files: ");
+    scanf("%d", &n);//takes input for the number of files
+    struct File f[n];//structure to store the file id's in an array
+    printf("Enter the IDs of the files:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &f[i].id);//scans all the entered ids
+    }
+    // Perform merge sort on the files based on IDs
+    mergeSort(f, 0, n - 1);//function call
+    printf("Sorted files based on IDs: ");
+    for (int i = 0; i < n; i++)
+        printf("%d ", f[i].id);//prints sorted array
+    printf("\n");
+    gettimeofday(&tv1, NULL);
+    gettimeofday(&tv2, NULL);
+     printf("\nTime of merge sort = %f microseconds\n",(double)(tv2.tv_usec-tv1.tv_usec));//prints the time complexity
+	 getrusage(RUSAGE_SELF,&r_usage);//calls the function resource usage
+	 printf("Memory usage: %ld kilobytes\n",r_usage.ru_maxrss);//prints the memory usage
+    return 0;
+}
