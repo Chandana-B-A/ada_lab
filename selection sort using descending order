@@ -32,10 +32,10 @@ void main()//main function
 void selection_sort(int input[100],int n)//function definition
 {
 	 int i,j,max,temp;//variable declaration
-	 for(i=0;i<=n-2;i++)//loop through the array
+	 for(i=0;i<n-1;i++)//loop through the array
 	 {
 		  max=i;//max is i
-		  for(j=i+1;j<=n-1;j++)//if condition satisfied
+		  for(j=i+1;j<n;j++)//if condition satisfied
 		  {
 			   if(input[j]>input[max])//checks if greater
 				    max=j;//max is j
