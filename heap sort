@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <sys/time.h>
+#include <time.h>
+#include <sys/resource.h>//headerfiles
+
+void heapify(int a[], int n, int i)
+{
+	int max = i;
+	// left = 2*i + 1
+	int l = 2 * i + 1;
+	// right = 2*i + 2
+	int r = 2 * i + 2;
+	// If left child is larger than root
+	if (l < n && a[l] > a[max])
+		max = l;
+	// If right child is larger than largest
+	// so far
+	if (r < n && a[r] > a[max])
+		max = r;
+	// Swap and continue heapifying
+	// if root is not largest
+	// If largest is not root
+	if (max!=i) {
+        int temp=a[i];
+        a[i]=a[max];
+        a[max]=temp;//swap elements
+		heapify(a, n, max);// Recursively heapify tree affected sub-tree
+	}
+}
+
+// Main function to do heap sort
+void heapSort(int a[], int n)
+{
+	for (int i = n / 2 - 1; i >= 0; i--)
+		heapify(a, n, i);//build heap
+	for (int i = n - 1; i >= 0; i--)
+	{//swap elements
+		int temp=a[0];
+		a[0]=a[i];
+		a[i]=temp;
+		heapify(a, i, 0);//recursive call
+	}
+}
+
+// Driver's code
+int main()
+{
+    struct timeval tv1, tv2;//structure for time complexity
+    struct rusage r_usage;//structure for space complexity
+	int n,i;//variable declaration
+	printf("enter the size: "); //prints
+	scanf("%d",&n);//scans the input
+	int a[n];
+	printf("enter the elements: \n"); //prints
+	for(i=0;i<n;i++)
+	    scanf("%d",&a[i]);//scans the input
+	gettimeofday(&tv1, NULL);
+	heapSort(a, n);//function call
+	gettimeofday(&tv2, NULL);
+	printf("Sorted array is\n"); //prints
+	for(i=0;i<n;i++)
+	    printf("%d ",a[i]);//prints
+	printf("\n\nTime used: %f ms",(double)(tv2.tv_usec-tv1.tv_usec));//print the time taken
+	getrusage(RUSAGE_SELF,&r_usage);//calculate space complexity
+	printf("\nmemory used %ld kB",r_usage.ru_maxrss);//print space complexity
+}
