@@ -2,7 +2,7 @@
 #include <sys/time.h> 
 #include <time.h>
 #include <sys/resource.h>//headerfiles
-
+ 
 void heapify(int a[], int n, int i)
 {
 	int max = i;
